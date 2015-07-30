@@ -1,18 +1,5 @@
-library(RODBC) # db library
 library(reshape2) # reshaping library to go from data frame to matrix
 library(MASS) #help write matrix to csv file
-
-# function to retrieve data as a data frame from the SQL Server
-# need to provide the SQL query
-# returns the data back as a data frame
-# any exceptions need to be caught by the client
-dbQuery <- function(sqlQueryString) {
-	dbhandle <- odbcDriverConnect('driver={SQL Server};server=data-1.viagogo.prod;database=viagogo;trusted_connection=true')
-	res <- sqlQuery(dbhandle, sqlQueryString)
-	odbcClose(dbhandle)
-
-	return(res)
-}
 
 # function to save the data frame for easy loading
 # need to provide the name of the file to save to
@@ -40,15 +27,8 @@ saveMatrixToFile <- function(dataMatrix, fileName){
 }
 
 
-fileToSaveDataFrame = "dataset-matrix-apr-july-all2-2015"
-fileToSaveMatrixCSV = "data-may-small-csv"
-
-# SAVE THE DATASET
-#fileName <- 'query.sql'
-#queryString = readChar(fileName, file.info(fileName)$size)
-#result = dbQuery(queryString)
-#str(result)
-#saveDataFrame(result, fileToSaveDataFrame)
+fileToSaveDataFrame = "../data/dataset-matrix-apr-july-all2-2015"
+fileOutput = "../data/user-cat-interactions.csv"
 
 # LOAD THE DATASET
 dataF = loadDataFrame(fileToSaveDataFrame)
@@ -67,9 +47,7 @@ result = result[result$CategoryID %in% names(which(table(result$CategoryID) > 10
 result$Rating = as.numeric(unlist(result[3]))
 result = result[-c(3)]
 
-# convert data to binary
-#result$Rating[result$Rating < 3] = 0
-#result$Rating[result$Rating >= 3] = 1
+# uncomment this if we need to only use Ratings >=3 for "interest"
 #result = result[result$Rating >= 3, ]
 
 # convert CategoryID to factors
@@ -82,17 +60,10 @@ str(result)
 # saving data frame to csv2
 data2 = subset(result, select=c(AnonymousID, CategoryID, Rating))
 data2 = data2[order(data2$AnonymousID), ]
-write.csv("temp-data.csv", x=data2)
+write.csv(fileOutput, x=data2)
 
 # convert from data frame to matrix
 resultM = acast(result, AnonymousID ~ CategoryID, value.var="Rating")
-
-
-# save Matrix to file (csv)
-#saveMatrixToFile(resultM, fileToSaveMatrixCSV)
-#write.table(resultM,file= paste(fileToSaveMatrixCSV, ".csv", sep="")) # keeps the rownames
-#unlink(fileToSaveMatrixCSV)
-
 
 # how sparse is the matrix
 filled = sum(!is.na(resultM))
@@ -100,7 +71,10 @@ empty = sum(is.na(resultM))
 print(100*filled/(filled+empty))
 
 
-# advanced debugging
+##--------------------------------------------------------------------------##
+# advanced debugging: should remove these
+##--------------------------------------------------------------------------##
+
 #fileToSaveMatrixCSV = "data-may-small-debug-csv"
 #resultM = resultM[(!is.na(resultM[,"8269"])), ]
 
