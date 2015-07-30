@@ -38,10 +38,10 @@ result$CategoryID = as.factor(result$CategoryID)
 str(result)
 
 # Eliminate AnonIds that have only interacted with a few Categories
-result = result[result$AnonymousID %in% names(which(table(result$AnonymousID) > 5)), ]
+result = result[result$AnonymousID %in% names(which(table(result$AnonymousID) > 50)), ]
 
 # Eliminate CategoryIDs that have only a few interactions
-result = result[result$CategoryID %in% names(which(table(result$CategoryID) > 10)), ]
+result = result[result$CategoryID %in% names(which(table(result$CategoryID) > 100)), ]
 
 # need to convert the Ratings/Interest variable to be numeric
 result$Rating = as.numeric(unlist(result[3]))
@@ -57,18 +57,18 @@ result$CategoryID = as.factor(result$CategoryID)
 result = droplevels(result)
 str(result)
 
-# saving data frame to csv2
+# saving data frame to csv
 data2 = subset(result, select=c(AnonymousID, CategoryID, Rating))
 data2 = data2[order(data2$AnonymousID), ]
 write.csv(fileOutput, x=data2)
 
 # convert from data frame to matrix
-resultM = acast(result, AnonymousID ~ CategoryID, value.var="Rating")
+#resultM = acast(result, AnonymousID ~ CategoryID, value.var="Rating")
 
 # how sparse is the matrix
-filled = sum(!is.na(resultM))
-empty = sum(is.na(resultM))
-print(100*filled/(filled+empty))
+#filled = sum(!is.na(resultM))
+#empty = sum(is.na(resultM))
+#print(100*filled/(filled+empty))
 
 
 ##--------------------------------------------------------------------------##
