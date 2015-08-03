@@ -18,6 +18,7 @@ filename_input_interactions = "../data/user-cat-interactions.csv"
 filename_output = "../output/output-top-k-predictions.csv"
 
 
+# helper function to read from CSV
 def read_csv(filename, column_name_array):
   f = open(filename, 'rU')
   reader = csv.DictReader(f, column_name_array)
@@ -32,6 +33,8 @@ def read_csv(filename, column_name_array):
   return rows
 
 
+# Helper funciton to read from the categories-popularity file
+# these are popularities from Spotify
 def read_category_popularity():
 
   filename = filename_category_popularity
@@ -47,6 +50,8 @@ def read_category_popularity():
   return category_popularity_dict
 
 
+# Helper funciton to read from the categories-genre file
+# these are popularities from Spotify
 def read_category_genre():
   filename = filename_category_genre
 
@@ -76,6 +81,10 @@ def read_category_genre():
   return category_genre_dict
 
 
+# This helper function puts together all "side-features" for each "item"
+# In this case, "item" refers to category
+# "side'features" can be any metadata about each category such as:
+# genre, popularity etc
 def get_item_side_features():
 
   print "getting popularity dict"
@@ -88,7 +97,6 @@ def get_item_side_features():
   print "getting categories array"
   categories_array = category_popularity_dict.keys()
 
-  
   print "getting genre, popularity arrays"
   popularity_array = []
   genre_array = []
@@ -121,10 +129,11 @@ print "extracting data"
 t0 = time.time()
 
 # get ITEM INFO (metadata)
+# Uncomment this when side-features are actually going to be used
 #item_info = get_item_side_features()
 
 
-# actual example
+# Read Input Data
 data_file = filename_input_interactions
 sf = gl.SFrame.read_csv(data_file,delimiter=',', header=True, column_type_hints={'AnonymousID':str, 'CategoryID':str,'Rating':int})
 
@@ -137,7 +146,7 @@ print 'time taken: %f' %(total)
 print "---------------------------------------------"
 print "---------------------------------------------"
 
-
+# Do the Train/Test split
 print "train/test split"
 print "---------------------------------------------"
 t0 = time.time()
@@ -163,29 +172,6 @@ m = gl.popularity_recommender.create(train_set, 'AnonymousID', 'CategoryID', 'Ra
 t1 = time.time()
 
 total = t1-t0
-
-print "Baseline model built"
-print 'time taken: %f' %(total)
-print "---------------------------------------------"
-
-print "---------------------------------------------"
-print "Predicting based on Baseline Model"
-print "---------------------------------------------"
-# predicting the baseline RMSE
-t0 = time.time()
-baseline_rmse = gl.evaluation.rmse(test_set['Rating'], m.predict(test_set))
-t1 = time.time()
-
-total = t1-t0
-
-print "---------------------------------------------"
-print "Baseline Predictions done"
-print 'time taken: %f' %(total)
-print "Baseline RMSE:"
-print baseline_rmse
-print "---------------------------------------------"
-print "---------------------------------------------"
-
 
 print "---------------------------------------------"
 print "Tuning Params"
@@ -213,11 +199,9 @@ print 'time taken: %f' %(total)
 print "---------------------------------------------"
 
 print "---------------------------------------------"
-print "Predicting and Writing"
+print "Predicting and Writing to file"
 print "---------------------------------------------"
 (rmse_train, rmse_test) = ([], [])
-
-
 
 best_rmse = 10000000.0
 best_pred_array = []
@@ -235,19 +219,6 @@ for m in models:
     	best_model = m
     	best_reg_val = m.regularization
 
-print "---------------------------------------------"
-print "Writing best predictions.."
-print "---------------------------------------------"
-#f = open('output-comparison.csv', 'wb')
-#csv_writer = csv.writer(f)
-#csv_writer.writerow(['anonid', 'catid', 'actual', 'predicted'])
-
-#for i in range(0, len(pred_array)):
-#	anonid = str(test_set['AnonymousID'][i])
-#	catid = str(test_set['CategoryID'][i])
-#	actual = test_set['Rating'][i]
-#	pred = best_pred_array[i]
-#	csv_writer.writerow([anonid, catid, actual, pred])
 
 print "---------------------------------------------"
 print "Completing Matrix. Re-Training for entire matrix."
@@ -268,10 +239,10 @@ rec.rename({'score': 'Rating'})
 rec['Rating'] = rec['Rating'].apply(lambda x: np.int(np.round(x)))
 rec = rec.sort('AnonymousID')
 
+# saving to file
 rec.save(filename_output, format='csv')
 print len(rec)
 print len(sf)
-
 
 print rmse_test
 print len(regularization_vals) * [baseline_rmse]
