@@ -83,19 +83,19 @@ write.csv(fileOutput, x=data2)
 
 #subset(data2$AnonymousID, data2$Rating == 5)
 
-d = factor(subset(data2$AnonymousID, data2$CategoryID == '4720'))
-str(d)
+#d = factor(subset(data2$AnonymousID, data2$CategoryID == '4720'))
+#str(d)
 
-anonid = 'A1D8EBA0-3449-4310-B41C-396D8EDBDE8E'
-deb = droplevels(subset(result$CategoryID, result$AnonymousID == anonid))
+#anonid = 'A1D8EBA0-3449-4310-B41C-396D8EDBDE8E'
+#deb = droplevels(subset(result$CategoryID, result$AnonymousID == anonid))
  #deb = droplevels(subset(result, result$AnonymousID == anonid))
-str(deb)
+#str(deb)
 
-deb = droplevels(subset(result, result$AnonymousID == anonid))
-deb
+#deb = droplevels(subset(result, result$AnonymousID == anonid))
+#deb
 
-onlyfive = result[result$AnonymousID %in% names(which(table(result$AnonymousID) == 2)), ]
-d = factor(subset(onlyfive$AnonymousID, onlyfive$CategoryID == '25109'))
-str(d)
+#onlyfive = result[result$AnonymousID %in% names(which(table(result$AnonymousID) == 2)), ]
+#d = factor(subset(onlyfive$AnonymousID, onlyfive$CategoryID == '25109'))
+#str(d)
 
 
