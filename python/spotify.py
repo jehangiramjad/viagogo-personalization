@@ -12,7 +12,7 @@ import time
 global API_KEY
 global FORMAT
 
-
+# Helper function to read from CSV
 def read_csv(filename):
 	fieldNames = ['categoryID', 'categoryName']
 
@@ -31,7 +31,7 @@ def read_csv(filename):
 	return category_array
 
 
-
+# Helper to print out Http Exceptions
 def print_exception(e, custom_string):
 	print "-----------------------------------"
 	print "Encountered an Error when retrieving for: %s" %(custom_string)
@@ -39,7 +39,7 @@ def print_exception(e, custom_string):
 	print "-----------------------------------"
 
 
-
+# Helper to make the EchoNet API call: Genre Info
 def make_echonest_artist_genre_req(params_dict):
 
 	url_values = urllib.urlencode(params_dict)
@@ -68,6 +68,7 @@ def make_echonest_artist_genre_req(params_dict):
 		print "-----------------------------------"
 
 
+# Helper to make the EchoNet API call: Artist Similarity
 def make_echonest_artist_similarity_req(params_dict):
 
 	url_values = urllib.urlencode(params_dict)
@@ -96,7 +97,8 @@ def make_echonest_artist_similarity_req(params_dict):
 		print "-----------------------------------"
 	
 
-
+# Helper function to search for Artists on Spotify
+# Get any associated metadata
 def search_artist(artist_name):
 	
 	# create the spotify object
@@ -122,6 +124,7 @@ def search_artist(artist_name):
 					names.append(name.lower())
 
 				# now find the closest name match
+				# this allows us to fuzzy-match
 				closest_matches = difflib.get_close_matches(artist_name.lower(), names)
 				#print closest_matches
 				best_match = closest_matches[0]
@@ -150,6 +153,8 @@ def search_artist(artist_name):
 	"spotify_genres":spotify_genres}
 
 
+
+# Helper function to manage search and metadata queries for individual artists
 def search_artist_http(artist_name):
 
 	# first get the closest actual name of the artist on the spotify db
@@ -205,6 +210,9 @@ def search_artist_http(artist_name):
 		return spotify_res
 
 
+# using the Categories file (from the Viagogo-db),
+# look up the artists on Spotify and EchoNest (which uses Spotify)
+# populate the metadata whenever we can and save to CSV
 def retrieve_category_metadata(input_csv_filename, output_csv_similarity_filename, out_csv_genre_filename, out_csv_popularity_filename):
 
 	# retrieve data
