@@ -304,12 +304,6 @@ def main():
 	retrieve_category_metadata(input_csv_filename, output_csv_similarity_filename, out_csv_genre_filename, out_csv_popularity_filename)
 
 	return
-
-
-	name = "Robbie Wams"
-	#res = search_artist(name)
-	res = search_artist_http(name.encode('utf-8'))
-	print res
-
+	
 if __name__ == '__main__':
     main()

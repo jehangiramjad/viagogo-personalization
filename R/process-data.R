@@ -37,17 +37,23 @@ result = dataF
 result$CategoryID = as.factor(result$CategoryID)
 str(result)
 
+# constants:
+K = 50  # K is the min nbr of Categories we want each AnonID to have interacted with 
+M = 100 # M is the min nbr of AnonIDs we want each Category to have interacted with
+# K and M will control how "sparse" the matrix will be. 
+# Increasing K, M will result in a smaller but less sparse matrix.  
+
 # Eliminate AnonIds that have only interacted with a few Categories
-result = result[result$AnonymousID %in% names(which(table(result$AnonymousID) > 50)), ]
+result = result[result$AnonymousID %in% names(which(table(result$AnonymousID) > K)), ]
 
 # Eliminate CategoryIDs that have only a few interactions
-result = result[result$CategoryID %in% names(which(table(result$CategoryID) > 100)), ]
+result = result[result$CategoryID %in% names(which(table(result$CategoryID) > M)), ]
 
 # need to convert the Ratings/Interest variable to be numeric
 result$Rating = as.numeric(unlist(result[3]))
 result = result[-c(3)]
 
-# uncomment this if we need to only use Ratings >=3 for "interest"
+# uncomment this if we need to only use Ratings >=3 for "level of interest"
 #result = result[result$Rating >= 3, ]
 
 # convert CategoryID to factors
@@ -72,7 +78,7 @@ write.csv(fileOutput, x=data2)
 
 
 ##--------------------------------------------------------------------------##
-# advanced debugging: should remove these
+## debugging: should remove these
 ##--------------------------------------------------------------------------##
 
 #fileToSaveMatrixCSV = "data-may-small-debug-csv"
