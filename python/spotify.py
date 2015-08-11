@@ -12,6 +12,9 @@ import time
 global API_KEY
 global FORMAT
 
+global RATE_LIMIT_SLEEP_TIME
+
+
 # Helper function to read from CSV
 def read_csv(filename):
 	fieldNames = ['categoryID', 'categoryName']
@@ -241,7 +244,7 @@ def retrieve_category_metadata(input_csv_filename, output_csv_similarity_filenam
 		categoryName = (category_dict['categoryName']).lower()
 
 		# sleep for a bit to respect API calls throtlling
-		time.sleep(5)
+		time.sleep(RATE_LIMIT_SLEEP_TIME)
 
 		try:
 			res = search_artist_http(categoryName.encode('utf-8'))
@@ -296,6 +299,7 @@ def main():
 
 	API_KEY = 'QQJWGXOVX5JROOIE0'
 	FORMAT = 'json'
+	RATE_LIMIT_SLEEP_TIME = 5
 
 	input_csv_filename = 'categories.csv'
 	output_csv_similarity_filename = 'categories-similarity.csv'
