@@ -1,0 +1,4 @@
+# Gitignore file
+
+data\*
+clustering\data\*
