@@ -6,12 +6,16 @@ import numpy as np
 
 #---------------------------------------------------------------------------------------------------
 # GLobal variables
+global K
+
 global modelFile
 global data_file1 
 global data_file2
 global data_file3 
 global data_file4 
 global dataframe_intermediate
+
+K = 5
 
 modelFile = 'data/modelFile'
 
@@ -138,7 +142,7 @@ def read_data():
 def perform_clustering(data_s_frame):
 	print "CLUSTERING"
 
-	cluster = gl.kmeans.create(data_s_frame, num_clusters=5)
+	cluster = gl.kmeans.create(data_s_frame, num_clusters=K)
 
 	
 

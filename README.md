@@ -56,3 +56,24 @@ Script Execution Order: Spotify Side-Data
 Batch Execution
 
 I have attempted at a Batch execution script to automate the process entirely. However, it can definitely be improved. The script is located under batch\ directory.
+
+
+
+#############################################
+#############################################
+CLUSTERING
+
+Script Execution Order: Matrix Generation
+
+1. Execute the R script: clustering\clustering-data-processing.R
+	This R script retrieves data from the SQL backend.
+	To change the params (dates etc), modify the SQL scripts under the clustering\ directory, directly.
+	The R script executes the SQL scripts as is without modifications.
+
+2. Execute the Python script: clustering\clustering.py
+	This is the Python script which contains the Graphlab k-Means Clustering code.
+	THe code first reads from the data extracts used in step (1).
+	Next, it puts the data together to be provided to the Graphlab clustering library.
+	It then prints the cluster centers etc.
+	You can change the global variables (including "k") at the head of the file. 
+	All starting and intermediate data is under clustering\data\
