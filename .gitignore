@@ -1,4 +1,4 @@
 # Gitignore file
 
-data\*
-clustering\data\*
+data/*
+clustering/data/*
