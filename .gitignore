@@ -1,4 +1,4 @@
 # Gitignore file
 
-data/*.csv
-clustering/data/*
+data/*
+clustering/data/.csv*
